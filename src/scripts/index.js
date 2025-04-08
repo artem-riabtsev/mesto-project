@@ -1,3 +1,5 @@
+import '../pages/index.css';
+import { initialCards } from '../scripts/cards.js';
 const cardTemplate = document.querySelector('#card-template').content.querySelector('.card');
 const profilePopup = document.querySelector('.popup_type_edit');
 const cardPopup = document.querySelector('.popup_type_new-card');
@@ -72,6 +74,26 @@ document.querySelectorAll('.popup__close').forEach((button) => {
   const popup = button.closest('.popup');
   button.addEventListener('click', () => closeModal(popup));
 });
+
+const hasInvalidInput = (inputList) => {
+  return inputList.some((inputElement) => {
+    return !inputElement.validity.valid;
+  });
+};
+
+const toggleButtonState = (inputList, buttonElement) => {
+  if (hasInvalidInput(inputList)) {
+    buttonElement.classList.add("popup__button_inactive");
+  } else {
+    buttonElement.classList.remove('popup__button_inactive');
+  }
+};
+
+const updateButtonState = (form) => {
+  const inputList = Array.from(form.querySelectorAll('.popup__input'));
+  const buttonElement = form.querySelector('.popup__button');
+  toggleButtonState(inputList, buttonElement);
+};
 
 profileEditButton.addEventListener('click', () => {
   nameInput.value = profileName.textContent;
@@ -149,19 +171,8 @@ function handleEscapeKey(evt) {
     }
   };
   
-  const hasInvalidInput = (inputList) => {
-    return inputList.some((inputElement) => {
-      return !inputElement.validity.valid;
-    });
-  };
-  
-  const toggleButtonState = (inputList, buttonElement) => {
-    if (hasInvalidInput(inputList)) {
-      buttonElement.classList.add("popup__button_inactive");
-    } else {
-      buttonElement.classList.remove('popup__button_inactive');
-    }
-  };
+
+
   
   const setEventListeners = (form) => {
     const inputList = Array.from(form.querySelectorAll('.popup__input'));
@@ -174,12 +185,6 @@ function handleEscapeKey(evt) {
         toggleButtonState(inputList, buttonElement);
       });
     });
-  };
-
-  const updateButtonState = (form) => {
-    const inputList = Array.from(form.querySelectorAll('.popup__input'));
-    const buttonElement = form.querySelector('.popup__button');
-    toggleButtonState(inputList, buttonElement);
   };
   
   const enableValidation = () => {

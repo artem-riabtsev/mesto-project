@@ -4,6 +4,10 @@
   object-fit: contain;
 }
 
+.header__logo::before {
+  content: url("../../../images/logo.svg");
+}
+
 @media screen and (max-width: 480px) {
   .header__logo {
     width: 104px;
