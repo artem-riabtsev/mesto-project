@@ -167,4 +167,72 @@ avatarFormElement.addEventListener('submit', (evt) => {
     .catch((err) => console.error(err));
 });
 
+// Функция для проверки валидности поля
+const checkInputValidity = (form, inputElement) => {
+  if (!inputElement.validity.valid) {
+    showInputError(form, inputElement, inputElement.validationMessage);
+  } else {
+    hideInputError(form, inputElement);
+  }
+};
+
+// Функция для отображения ошибки валидации
+const showInputError = (form, inputElement, errorMessage) => {
+  const errorElement = form.querySelector(`.${inputElement.id}-error`);
+  inputElement.classList.add('popup__input_type_error');
+  errorElement.textContent = errorMessage;
+  errorElement.classList.add('popup__input-error_active');
+};
+
+// Функция для скрытия ошибки валидации
+const hideInputError = (form, inputElement) => {
+  const errorElement = form.querySelector(`.${inputElement.id}-error`);
+  inputElement.classList.remove('popup__input_type_error');
+  errorElement.textContent = '';
+  errorElement.classList.remove('popup__input-error_active');
+};
+
+// Функция для проверки наличия невалидных полей
+const hasInvalidInput = (inputList) => {
+  return inputList.some((inputElement) => !inputElement.validity.valid);
+};
+
+// Функция для управления состоянием кнопки
+const toggleButtonState = (inputList, buttonElement) => {
+  if (hasInvalidInput(inputList)) {
+    buttonElement.classList.add('popup__button_inactive');
+    buttonElement.disabled = true;
+  } else {
+    buttonElement.classList.remove('popup__button_inactive');
+    buttonElement.disabled = false;
+  }
+};
+
+// Функция для установки слушателей событий на форму
+const setEventListeners = (form) => {
+  const inputList = Array.from(form.querySelectorAll('.popup__input'));
+  const buttonElement = form.querySelector('.popup__button');
+  toggleButtonState(inputList, buttonElement);
+
+  inputList.forEach((inputElement) => {
+    inputElement.addEventListener('input', () => {
+      checkInputValidity(form, inputElement);
+      toggleButtonState(inputList, buttonElement);
+    });
+  });
+};
+
+// Функция для включения валидации формы
+const enableValidation = () => {
+  const formList = Array.from(document.querySelectorAll('.popup__form'));
+  formList.forEach((form) => {
+    form.addEventListener('submit', (evt) => {
+      evt.preventDefault();
+    });
+    setEventListeners(form);
+  });
+};
+
+
 renderInitialCards();
+enableValidation();
